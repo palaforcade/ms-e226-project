@@ -2,6 +2,7 @@ import os
 import pandas as pd
 
 from constants.columns import DatasetColumns
+from constants.seed import RANDOM_SEED
 
 
 class Preprocessor:
@@ -17,7 +18,7 @@ class Preprocessor:
         Create and export holdout set from our dataset
         """
         # Split the dataset in two
-        holdout_dataset = self.raw_dataset.sample(frac=0.2, random_state=42)
+        holdout_dataset = self.raw_dataset.sample(frac=0.2, random_state=RANDOM_SEED)
         self.raw_dataset_without_holdout = self.raw_dataset.drop(holdout_dataset.index)
 
         # Export the holdout set
