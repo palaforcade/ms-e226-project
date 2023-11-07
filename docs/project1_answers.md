@@ -55,7 +55,7 @@ We first plotted the redshift as a function of the "better fit DeV/Exp magnitude
 
 We got the following plots:
 
-###Import plots
+![Alt text](exploration_plots_with_outliers/Magnitude_fit.png)
 
 As we can see, there are some outliers when plotting with regards to the z band.
 
@@ -63,11 +63,13 @@ We then plotted the redshift with regard to the Petrosian Radii, Petrosian Fluxe
 
 We got the following plots:
 
-###Import plots
+<!-- ![Alt text](<exploration_plots_with_outliers/Petrosian Radius.png>) ![Alt text](<exploration_plots_with_outliers/Petrosian Half-Light Radius.png>) ![Alt text](<exploration_plots_with_outliers/Petrosian Flux.png>) ![Alt text](exploration_plots_with_outliers/Magnitude_fit.png) -->
+
+###TO RESIZE
 
 We spotted other outliers with the value -10000, so we decided to delete all the rows that contain values equal to -10000, as we think that they were an autofill for missing values.
 
-(d) As we saw 
+(d) As we saw in the previous plot, 
 
 (e)
 
