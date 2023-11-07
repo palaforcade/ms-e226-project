@@ -13,6 +13,11 @@ This dataset is the result of the Sloan Digital Sky Survey, a study that archive
 - It contains many continuous covariates, and one categorical for the classification of the stellar object.
 - It is not a time series.
 - The data is gloablly clean and only a few to no values are missing. 
+- The model relies on two astrophysical concepts:
+
+The UBV photometric system (from Ultraviolet, Blue, and Visual), which can be broken down into five sets of photometric bands - u, g, r, i, z, namely ultraviolet band, green band, red band, infrared band, and near infrared band respectively. It consists in measuring the brightness of the light at different wavelengths. This system, also called the Johnson system, is a photometric system usually employed for classifying stars according to their measured colors.
+
+Redshift, a key concept for astronomers, that reveals how an object in space is moving compared to us. It is a speed, and allows astronomors to measure the true distance between us and distant objects (in the past).
 
 This dataset is publicly accessible and under the following license : https://creativecommons.org/licenses/by-sa/4.0/
 We can use it for research purpose, and will only need to give appropriate credit if we publicly share our model.
@@ -22,6 +27,7 @@ We can use it for research purpose, and will only need to give appropriate credi
 We acknowledge that we have reserved 20% of the rows of our dataset for the second part of the project
 
 ### 4 - Outcome
+
 For our continuous outcome, we will predict redshift, which is interesting because it determines how galaxies are distributed throughout the universe, informs us about the expansion rate of the cosmos, and contributes to our understanding of dark matter and dark energy. Additionally, redshift data can reveal galaxy properties and evolution, making it ideal for applying machine learning techniques to large datasets like the SDSS for insightful astrophysical discoveries.
 
 For the categorical outcome, we'll be classifying whether a stellar object is a star or not. This classification is essential for astrophysical research, allowing scientists to study the properties and distribution of stars relative to other celestial objects. With a dataset like SDSS, which provides extensive data on various objects, machine learning can efficiently differentiate stars, aiding in large-scale cosmic surveys and contributing to our broader knowledge of stellar evolution and galaxy formation.
@@ -44,7 +50,24 @@ A few issues with data collection can be outlined:
 
 (c) Engineered features
 
-(d) 
+We started data exploration and plotted the redshift as a function of the different covariates (univariates analysis). 
+We first plotted the redshift as a function of the "better fit DeV/Exp magnitude photometric band" for the five bands. Concretely, there exist two main distributions of the emitted light with regard to the width of the stellar object. "De Vaucouleurs" (DeV), a logarithmic distribution; and "Exponential Profile", and exponential distribution. "better fit DeV/Exp magnitude photometric band" fits both distributions and chooses the best fit.
+
+We got the following plots:
+
+###Import plots
+
+As we can see, there are some outliers when plotting with regards to the z band.
+
+We then plotted the redshift with regard to the Petrosian Radii, Petrosian Fluxes, Petrosian Half-Light Radii, and PSF Magnitude.
+
+We got the following plots:
+
+###Import plots
+
+We spotted other outliers with the value -10000, so we decided to delete all the rows that contain values equal to -10000, as we think that they were an autofill for missing values.
+
+(d) As we saw 
 
 (e)
 
