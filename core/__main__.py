@@ -3,6 +3,7 @@ import logging
 
 from constants.task import Task
 from preprocessing.main import Preprocessor
+from exploration.plots import DatasetExplorer
 
 logger = logging.getLogger(__name__)
 
@@ -36,3 +37,8 @@ if __name__ == "__main__":
         logger.info("Running preprocessing task")
         Preprocessor(args.data_folder).run_preprocessing()
         logger.info("Preprocessing task done")
+
+    if args.task == Task.EXPLORATION:
+        logger.info("Running exploration task")
+        DatasetExplorer(args.data_folder).run_exploration()
+        logger.info("Exploration task done")
