@@ -27,7 +27,7 @@ class Preprocessor:
         )
 
     def select_covariates(self):
-        self.preprocessed_dataset = self.raw_dataset_without_holdout[
+        self.dataset_with_selected_covariates = self.raw_dataset_without_holdout[
             [col.value for col in DatasetColumns]
         ]
 
@@ -35,6 +35,31 @@ class Preprocessor:
         self.preprocessed_dataset.to_csv(
             os.path.join(self.data_folder, "preprocessed/preprocessed_dataset.csv"),
             index=False,
+        )
+
+    @staticmethod
+    def one_hot_encode_categorical_variables(dataframe: pd.DataFrame, columns: list):
+        """
+        One hot encode the categorical variables
+        """
+        dataframe = pd.get_dummies(dataframe, columns=columns)
+        return dataframe
+
+    def remove_outliers(self):
+        """
+        We have outliers in the data that we need to remove. They are characterized by having a value in the covariates that are inferior to -9000.
+        """
+        numerical_columns = self.dataset_with_selected_covariates.select_dtypes(
+            include=["number"]
+        ).columns
+        self.dataset_with_selected_covariates[
+            numerical_columns
+        ] = self.dataset_with_selected_covariates[numerical_columns].mask(
+            self.dataset_with_selected_covariates[numerical_columns] < -9000, pd.NA
+        )
+
+        self.preprocessed_dataset = self.dataset_with_selected_covariates.dropna(
+            subset=numerical_columns
         )
 
     def run_preprocessing(self):
@@ -45,5 +70,11 @@ class Preprocessor:
         self.create_holdout_set()
 
         self.select_covariates()
+
+        self.remove_outliers()
+
+        self.preprocessed_dataset = Preprocessor.one_hot_encode_categorical_variables(
+            self.preprocessed_dataset, [DatasetColumns.CLASS.value]
+        )
 
         self.export_preprocessed_dataset()

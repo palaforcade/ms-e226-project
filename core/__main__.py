@@ -1,9 +1,11 @@
 import argparse
 import logging
 
+import config.logging
 from constants.task import Task
 from preprocessing.main import Preprocessor
 from exploration.plots import DatasetExplorer
+from regression.main import run_regression_models
 
 logger = logging.getLogger(__name__)
 
@@ -42,3 +44,8 @@ if __name__ == "__main__":
         logger.info("Running exploration task")
         DatasetExplorer(args.data_folder).run_exploration()
         logger.info("Exploration task done")
+
+    if args.task == Task.REGRESSION:
+        logger.info("Running regression task")
+        run_regression_models(args.data_folder)
+        logger.info("Regression task done")
