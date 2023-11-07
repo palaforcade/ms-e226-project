@@ -2,7 +2,7 @@
 
 ### 1 - Registration and staff meeting
 - We acknowledge that we submitted the registration form 
-- We met with Ravi on his office hour on october 16th (at approximately 7:50pm)
+- We met with Ravi on his office hour on October 16th (at approximately 7:50pm)
 
 ### 2 - Dataset selection
 
