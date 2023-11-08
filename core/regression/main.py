@@ -2,7 +2,7 @@ import logging
 
 from regression.ols_model import OLSBaselineModel
 from regression.lasso_with_squares import LassoWithSquaresModel
-from regression.one_layer_perceptron import OneLayerPerceptron
+from regression.one_layer_perceptron.one_layer_perceptron import OneLayerPerceptron
 
 logger = logging.getLogger(__name__)
 
