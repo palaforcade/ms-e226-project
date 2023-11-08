@@ -103,6 +103,13 @@ class Perceptron:
             loss.backward()
             optimizer.step()
 
+        # Log the MSE on the train set (in-sample error)
+        train_mse = nn.MSELoss()
+        train_mse = train_mse(y_pred.squeeze(), self.train_outcomes)
+        logger.info(
+            f"Train MSE for {self.model_structure.__name__} NN: {train_mse.item():.4f}"
+        )
+
     def compute_test_mse(self):
         """
         Compute the MSE on the test set

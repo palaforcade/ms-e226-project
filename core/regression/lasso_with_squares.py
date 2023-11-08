@@ -62,6 +62,10 @@ class LassoWithSquaresModel:
 
         self.model = Lasso(alpha=self.LASSO_ALPHA).fit(covariates, outcomes)
 
+        # Log the MSE on the train set (in-sample error)
+        self.train_mse = ((self.model.predict(covariates) - outcomes) ** 2).mean()
+        logger.info(f"Train MSE for Lasso with squares model: {self.train_mse}")
+
     def compute_test_mse(self):
         """
         Compute the MSE on the test set

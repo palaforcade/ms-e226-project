@@ -41,6 +41,10 @@ class OLSBaselineModel:
 
         self.model = LinearRegression().fit(covariates, outcomes)
 
+        # Log the MSE on the train set (in-sample error)
+        self.train_mse = ((self.model.predict(covariates) - outcomes) ** 2).mean()
+        logger.info(f"Train MSE for OLS baseline model: {self.train_mse}")
+
     def compute_test_mse(self):
         """
         Compute the MSE on the test set
