@@ -36,7 +36,7 @@ class LogisticRegressionModel:
         """
 
         covariates = self.train_set.drop(columns=[DatasetColumns.REDSHIFT.value])
-        outcomes = (self.train_set[DatasetColumns.CLASS.value] == "Star").astype(int)
+        outcomes = (self.train_set[DatasetColumns.CLASS.value] == "QUASAR").astype(int)
 
         self.classifier = LogisticRegression().fit(covariates, outcomes)
 

@@ -1,6 +1,6 @@
 import logging
 
-from classification.logistic_regression import LogisticRegressionModel
+from classification.simple_logistic_regression.logistic_regression_star import LogisticRegressionModel
 
 logger = logging.getLogger(__name__)
 
