@@ -12,7 +12,7 @@ This dataset is the result of the Sloan Digital Sky Survey, a study that archive
 - It has 43 columns and more than a hundred thousand rows.
 - It contains many continuous covariates, and one categorical for the classification of the stellar object.
 - It is not a time series.
-- The data is gloablly clean and only a few to no values are missing. 
+- The data is gloablly clean and only a few to no values are missing, and there are a minor number of outliers to be removed. 
 - The model relies on two astrophysical concepts:
 
 The UBV photometric system (from Ultraviolet, Blue, and Visual), which can be broken down into five sets of photometric bands - u, g, r, i, z, namely ultraviolet band, green band, red band, infrared band, and near infrared band respectively. It consists in measuring the brightness of the light at different wavelengths. This system, also called the Johnson system, is a photometric system usually employed for classifying stars according to their measured colors.
@@ -55,7 +55,7 @@ We first plotted the redshift as a function of the "better fit DeV/Exp magnitude
 
 We got the following plots:
 
-![Alt text](exploration_plots_with_outliers/Magnitude_fit.png)
+<img src='exploration_plots_with_outliers/Magnitude_fit.png' width=50% />
 
 As we can see, there are some outliers when plotting with regards to the z band.
 
@@ -63,9 +63,11 @@ We then plotted the redshift with regard to the Petrosian Radii, Petrosian Fluxe
 
 We got the following plots:
 
-<!-- ![Alt text](<exploration_plots_with_outliers/Petrosian Radius.png>) ![Alt text](<exploration_plots_with_outliers/Petrosian Half-Light Radius.png>) ![Alt text](<exploration_plots_with_outliers/Petrosian Flux.png>) ![Alt text](exploration_plots_with_outliers/Magnitude_fit.png) -->
+<div display='flex'>
 
-###TO RESIZE
+<img src="./exploration_plots_with_outliers/Petrosian Radius.png" width="50%" style='{display: "inline"}'><img src="exploration_plots_with_outliers/Petrosian Half-Light Radius.png" width=50% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Petrosian Flux.png' width=50% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Magnitude_fit.png' width='50%' style='{display: "inline"}'/> 
+
+
 
 We spotted other outliers with the value -10000, so we decided to delete all the rows that contain values equal to -10000, as we think that they were an autofill for missing values.
 
