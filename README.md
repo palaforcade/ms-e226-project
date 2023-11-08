@@ -3,7 +3,7 @@ Stanford's MS&amp;E 226 class project [Pierre-Amaury Laforcade &amp; Axel Durand
 
 ## Run the model tasks
 
-To run the different tasks, you can use the following commands you put the data folder at the root of the repo
+To run the different tasks, you can use the following commands - you put the data folder at the root of the repo
 
 **Preprocessing**
 ```bash
