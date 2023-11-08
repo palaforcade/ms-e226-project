@@ -112,6 +112,16 @@ class PerceptronClassifier:
             loss.backward()
             optimizer.step()
 
+        # Log the accuracy on the train set (in-sample error)
+        self.train_accuracy = (
+            ((y_pred.squeeze() >= THRESHOLD).float() == self.train_outcomes)
+            .float()
+            .mean()
+        )
+        logger.info(
+            f"Train accuracy for {self.model_structure.__name__} NN: {self.train_accuracy.item():.4f}"
+        )
+
     def compute_test_accuracy(self):
         """
         Compute the MSE on the test set

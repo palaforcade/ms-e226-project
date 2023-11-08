@@ -48,6 +48,12 @@ class LogisticRegressionModelStar:
 
         self.classifier = LogisticRegression().fit(covariates, outcomes)
 
+        # Log the accuracy on the train set (in-sample error)
+        self.train_accuracy = ((self.classifier.predict(covariates) == outcomes)).mean()
+        logger.info(
+            f"Train accuracy for logistic regression model: {self.train_accuracy}"
+        )
+
     def compute_test_accuracy(self):
         """
         Compute the accuracy on the test set
@@ -62,6 +68,6 @@ class LogisticRegressionModelStar:
 
         outcomes = self.test_set[StellarClassOneHotEncoded.STAR.value]
 
-        test_mse = ((self.classifier.predict(covariates) - outcomes) ** 2).mean()
+        test_accuracy = ((self.classifier.predict(covariates) == outcomes)).mean()
 
-        logger.info(f"Test accuracy for logistic regression model: {1 - test_mse}")
+        logger.info(f"Test accuracy for logistic regression model: {test_accuracy}")
