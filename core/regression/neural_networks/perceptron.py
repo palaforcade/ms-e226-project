@@ -6,25 +6,25 @@ from sklearn.preprocessing import StandardScaler
 
 from constants.seed import RANDOM_SEED
 from constants.columns import DatasetColumns
-from regression.one_layer_perceptron.nn_model import NNModel
 
 TRAIN_SPLIT_RATIO = 0.7
-HIDDEN_LAYER_SIZE = 28
 LEARNING_RATE = 0.01
 EPOCHS_COUNT = 1000
 
 logger = logging.getLogger(__name__)
 
 
-class OneLayerPerceptron:
+class Perceptron:
     """
-    A model to predict the redshift of a stellar object using a neural network with one hidden layer
+    A model to predict the redshift of a stellar object using a neural network.
     """
 
-    def __init__(self, data_folder):
+    def __init__(self, data_folder, model_structure):
         self.dataset = pd.read_csv(
             os.path.join(data_folder, "preprocessed/preprocessed_dataset.csv")
         )
+
+        self.model_structure = model_structure
 
         # Train and evaluate the model
         self.train_test_split()
@@ -83,7 +83,7 @@ class OneLayerPerceptron:
         """
         Define and train the perceptron using pytorch
         """
-        self.model = NNModel(self.train_covariates.shape[1], HIDDEN_LAYER_SIZE)
+        self.model = self.model_structure(self.train_covariates.shape[1])
 
         # Define the loss function and optimizer
         criterion = nn.MSELoss()
@@ -112,4 +112,6 @@ class OneLayerPerceptron:
             y_pred = self.model(self.test_covariates)
             mse = nn.MSELoss()
             test_mse = mse(y_pred.squeeze(), self.test_outcomes)
-            logger.info(f"Test MSE for one-layer perceptron: {test_mse.item():.4f}")
+            logger.info(
+                f"Test MSE for {self.model_structure.__name__} NN: {test_mse.item():.4f}"
+            )
