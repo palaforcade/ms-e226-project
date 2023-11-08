@@ -1,6 +1,8 @@
 import logging
 
-from classification.simple_logistic_regression.logistic_regression_star import LogisticRegressionModel
+from classification.simple_logistic_regression.logistic_regression_star import (
+    LogisticRegressionModelStar,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -11,6 +13,6 @@ def run_classification_models(data_folder):
     """
     logger.info("Running classification models")
 
-    LogisticRegressionModel(data_folder).compute_test_accuracy()
+    LogisticRegressionModelStar(data_folder).compute_test_accuracy()
 
     logger.info("Classification models done")

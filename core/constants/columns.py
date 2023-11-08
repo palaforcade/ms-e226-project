@@ -43,3 +43,9 @@ class DatasetColumns(Enum):
 
     REDSHIFT = "redshift"
     CLASS = "class"
+
+
+class StellarClassOneHotEncoded(Enum):
+    GALAXY = "class_GALAXY"
+    QSO = "class_QSO"
+    STAR = "class_STAR"

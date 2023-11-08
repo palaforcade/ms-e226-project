@@ -5,12 +5,14 @@ import logging
 from sklearn.linear_model import LogisticRegression
 from constants.columns import DatasetColumns
 from constants.seed import RANDOM_SEED
+from constants.columns import StellarClassOneHotEncoded
 
 logger = logging.getLogger(__name__)
 
 TRAIN_SPLIT_RATIO = 0.7
 
-class LogisticRegressionModel:
+
+class LogisticRegressionModelStar:
     def __init__(self, data_folder):
         self.dataset = pd.read_csv(
             os.path.join(data_folder, "preprocessed/preprocessed_dataset.csv")
@@ -35,26 +37,31 @@ class LogisticRegressionModel:
         Train the model
         """
 
-        covariates = self.train_set.drop(columns=[DatasetColumns.REDSHIFT.value])
-        outcomes = (self.train_set[DatasetColumns.CLASS.value] == "STAR").astype(int)
+        covariates = self.train_set.drop(
+            columns=[
+                StellarClassOneHotEncoded.STAR.value,
+                StellarClassOneHotEncoded.GALAXY.value,
+                StellarClassOneHotEncoded.QSO.value,
+            ]
+        )
+        outcomes = self.train_set[StellarClassOneHotEncoded.STAR.value]
 
         self.classifier = LogisticRegression().fit(covariates, outcomes)
 
-    def predict_class(self, new_observation):
-        """
-        Predict the class of a new observation
-        """
-        new_covariates = new_observation.drop(columns=[DatasetColumns.REDSHIFT.value])
-        predicted_prob = self.classifier.predict_proba(new_covariates)[:, 1]  # Probability of being a star
-        return predicted_prob
-    
     def compute_test_accuracy(self):
         """
         Compute the accuracy on the test set
         """
-        covariates = self.test_set.drop(columns=[DatasetColumns.REDSHIFT.value])
-        outcomes = (self.train_set[DatasetColumns.CLASS.value] == "Star").astype(int)
+        covariates = self.test_set.drop(
+            columns=[
+                StellarClassOneHotEncoded.STAR.value,
+                StellarClassOneHotEncoded.GALAXY.value,
+                StellarClassOneHotEncoded.QSO.value,
+            ]
+        )
 
-        self.test_mse = ((self.classifier.predict(covariates) - outcomes) ** 2).mean()
+        outcomes = self.test_set[StellarClassOneHotEncoded.STAR.value]
 
-        logger.info(f"Test accuracy for logistic regression model: {self.test_mse}")
+        test_mse = ((self.classifier.predict(covariates) - outcomes) ** 2).mean()
+
+        logger.info(f"Test accuracy for logistic regression model: {1 - test_mse}")

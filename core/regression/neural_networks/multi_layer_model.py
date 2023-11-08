@@ -1,7 +1,7 @@
 from torch import nn
 
 HIDDEN_LAYER_SIZE_FIRST = 30
-HIDDEN_LAYER_SIZE_SECOND = 8
+HIDDEN_LAYER_SIZE_SECOND = 10
 
 
 class MultiLayerModel(nn.Module):
