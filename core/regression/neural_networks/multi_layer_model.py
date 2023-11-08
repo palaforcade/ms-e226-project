@@ -11,7 +11,7 @@ class MultiLayerModel(nn.Module):
         self.fc1 = nn.Linear(input_size, HIDDEN_LAYER_SIZE_FIRST)
         self.activation = nn.LeakyReLU()
         self.fc2 = nn.Linear(HIDDEN_LAYER_SIZE_FIRST, HIDDEN_LAYER_SIZE_SECOND)
-        self.activation2 = nn.Sigmoid()
+        self.activation2 = nn.Tanh()
         self.fc3 = nn.Linear(HIDDEN_LAYER_SIZE_SECOND, 1)
 
     def forward(self, x):
