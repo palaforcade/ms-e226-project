@@ -75,7 +75,7 @@ We spotted other outliers with the value -10000, so we decided to delete all the
 
 The other parameters (Petrosian fluxes, radii, half-light radii, psf-magnitudes) also seem correlated to the outcome variable, which may indicate that overfitting will not be a problem.
 
-We also have a important heteroskedasticity in the model, meaning variance of redshift depends on the value of the covariates. We will take this into account
+The difference between the variance in the scatter plots between the left and the right sides of our graphs shows that our dataset is heteroskedastic, meaning variance of redshift depends on the value of the covariates. We will take this into account
 
 (e) The magnitude of the photometric bands are dependent of the other parameters of the problem. With a pairplot, we also confirmed that these five bands seem highly positively correlated to each other (this is also logical given the physics of the problem - a brighter staller object will emit more at every wavelength).
 
