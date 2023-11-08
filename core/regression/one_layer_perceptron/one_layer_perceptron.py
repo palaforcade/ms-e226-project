@@ -9,9 +9,9 @@ from constants.columns import DatasetColumns
 from regression.one_layer_perceptron.nn_model import NNModel
 
 TRAIN_SPLIT_RATIO = 0.7
-HIDDEN_LAYER_SIZE = 15
+HIDDEN_LAYER_SIZE = 28
 LEARNING_RATE = 0.01
-EPOCHS_COUNT = 10
+EPOCHS_COUNT = 1000
 
 logger = logging.getLogger(__name__)
 
@@ -87,7 +87,7 @@ class OneLayerPerceptron:
 
         # Define the loss function and optimizer
         criterion = nn.MSELoss()
-        optimizer = optim.SGD(self.model.parameters(), lr=LEARNING_RATE)
+        optimizer = optim.Adam(self.model.parameters(), lr=LEARNING_RATE)
 
         # Training loop
         for epoch in range(EPOCHS_COUNT):
@@ -95,8 +95,8 @@ class OneLayerPerceptron:
             y_pred = self.model(self.train_covariates)
 
             # Compute and print loss
-            loss = criterion(y_pred, self.train_outcomes)
-            logger.info(f"Epoch {epoch + 1} | Loss: {loss.item():.4f}")
+            loss = criterion(y_pred.squeeze(), self.train_outcomes)
+            logger.debug(f"Epoch {epoch + 1} | Loss: {loss.item():.4f}")
 
             # Zero gradients, perform a backward pass, and update the weights
             optimizer.zero_grad()
@@ -111,5 +111,5 @@ class OneLayerPerceptron:
         with no_grad():
             y_pred = self.model(self.test_covariates)
             mse = nn.MSELoss()
-            test_mse = mse(y_pred, self.test_outcomes)
+            test_mse = mse(y_pred.squeeze(), self.test_outcomes)
             logger.info(f"Test MSE for one-layer perceptron: {test_mse.item():.4f}")
