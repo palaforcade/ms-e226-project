@@ -1,10 +1,11 @@
-# Project 1 answers
+### MS&E 226 Project 1 report
 
-### 1 - Registration and staff meeting
+#### 1 - Registration and staff meeting
+
 - We acknowledge that we submitted the registration form 
 - We met with Augustin on October 23th to validate the dataset
 
-### 2 - Dataset selection
+#### 2/3 - Dataset selection
 
 The dataset we are going to use is the following : https://www.kaggle.com/datasets/diraf0/sloan-digital-sky-survey-dr18
 
@@ -22,17 +23,15 @@ Redshift, a key concept for astronomers, that reveals how an object in space is 
 This dataset is publicly accessible and under the following license : https://creativecommons.org/licenses/by-sa/4.0/
 We can use it for research purpose, and will only need to give appropriate credit if we publicly share our model.
 
-### 3 - Holdout set
+- We acknowledge that we have reserved 20% of the rows of our dataset for the second part of the project
 
-We acknowledge that we have reserved 20% of the rows of our dataset for the second part of the project
-
-### 4 - Outcome
+#### 4 - Outcome
 
 For our continuous outcome, we will predict redshift, which is interesting because it determines how galaxies are distributed throughout the universe, informs us about the expansion rate of the cosmos, and contributes to our understanding of dark matter and dark energy. Additionally, redshift data can reveal galaxy properties and evolution, making it ideal for applying machine learning techniques to large datasets like the SDSS for insightful astrophysical discoveries.
 
 For the categorical outcome, we'll be classifying whether a stellar object is a star or not. This classification is essential for astrophysical research, allowing scientists to study the properties and distribution of stars relative to other celestial objects. With a dataset like SDSS, which provides extensive data on various objects, machine learning can efficiently differentiate stars, aiding in large-scale cosmic surveys and contributing to our broader knowledge of stellar evolution and galaxy formation.
 
-### 5 - Data description and exploration
+#### 5 - Data description and exploration
 
 (a) Space studies have picked up a good pace for the past ten years with a massive expansion of earth telescopes like Hubble and space telescopes like the newly launched James Webb Space Telescope. Thus, massive amounts of data are collected everyday for us to understand better the contents of our universe. It is then important to know how to classify these objects in the best way possible, and how to characterize them using different properties. This is where machine learning comes into play: as stated before, classifiers and redshift predictions will contribute to a better understanding of the distant universe, which makes this dataset exciting to dive into.
 
@@ -40,15 +39,13 @@ For the categorical outcome, we'll be classifying whether a stellar object is a 
 
 A few issues with data collection can be outlined:
 
-•	Coordination: Coordinating data collection from multiple telescopes and instruments in different locations is a complex task. It requires precise synchronization to ensure the accuracy and reliability of the data.
+**Coordination**: Coordinating data collection from multiple telescopes and instruments in different locations is a complex task. It requires precise synchronization to ensure the accuracy and reliability of the data.
 
-•	Cross-Matching Catalogs: Cross-matching of different input catalogs to ensure each object in the sky has a unique identifier, whose accuracy is crucial, as it affects the quality of the catalog and the identification of targets.
+**Cross-Matching Catalogs**: Cross-matching of different input catalogs to ensure each object in the sky has a unique identifier, whose accuracy is crucial, as it affects the quality of the catalog and the identification of targets.
 
-•	Instrumentation: Ensuring proper calibration, maintenance, and performance of new instruments and telescopes for accurate data collection.
+**Instrumentation**: Ensuring proper calibration, maintenance, and performance of new instruments and telescopes for accurate data collection.
 
-•	Data Accessibility: Ensuring that data are accessible to the scientific public, including proper documentation. 
-
-(c) Engineered features
+**Data Accessibility**: Ensuring that data are accessible to the scientific public, including proper documentation. 
 
 We started data exploration and plotted the redshift as a function of the different covariates (univariates analysis). 
 We first plotted the redshift as a function of the "better fit DeV/Exp magnitude photometric band" for the five bands. Concretely, there exist two main distributions of the emitted light with regard to the width of the stellar object. "De Vaucouleurs" (DeV), a logarithmic distribution; and "Exponential Profile", and exponential distribution. "better fit DeV/Exp magnitude photometric band" fits both distributions and chooses the best fit.
@@ -64,12 +61,13 @@ We then plotted the redshift with regard to the Petrosian Radii, Petrosian Fluxe
 We got the following plots:
 
 <div display='flex'>
-
-<img src="./exploration_plots_with_outliers/Petrosian Radius.png" width="50%" style='{display: "inline"}'><img src="exploration_plots_with_outliers/Petrosian Half-Light Radius.png" width=50% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Petrosian Flux.png' width=50% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Magnitude_fit.png' width='50%' style='{display: "inline"}'/> 
+<img src="./exploration_plots_with_outliers/Petrosian Radius.png" width="40%" style='{display: "inline"}'><img src="exploration_plots_with_outliers/Petrosian Half-Light Radius.png" width=40% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Petrosian Flux.png' width=40% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Magnitude_fit.png' width='40%' style='{display: "inline"}'/> 
 
 
 
 We spotted other outliers with the value -10000, so we decided to delete all the rows that contain values equal to -10000, as we think that they were an autofill for missing values.
+
+(c) As we can see with the previous plots from the univariate analysis, the relationship between the magnitude of the photometric bands does not seem to be linear, but rather quadratic. This makes sense as most of the laws of physics, especially with energy related laws, are quadratic. This is why we will try to add quadratic-order features to some of our models.
 
 (d) As we saw in the previous plot, the magnitude of the photometric bands seem highly correlated to the redshift. This is not suprising given the physics behind the problem: the "photometric redshift estimation". With Z being the redshift, there exists a function f with Z = f(u, g, r, i, z). The form of f is usually complicated and requires machine learning algorithm to be determined for each star.
 
@@ -83,7 +81,7 @@ The difference between the variance in the scatter plots between the left and th
 
 (g) Little to no data is missing, the dataset is rather complete. Yet, as explained before, this is because the missing data have been filled and equaled to -10 000. Thus, deleted each row of the dataset where at least one value is at -10000. This is ok because we still have a lot of data to work with.
 
-### Prediction - Regression
+#### Prediction - Regression
 
 (a) The metric that we will use is the mean squared error on the test set. We will also compute the mean squared error on the training set in order to check for potential bias issues. Our goal will be to minimize the mean squared error in order to pick the best model.
 
@@ -135,7 +133,7 @@ As we saw with the results, Lasso train & test MSE are roughly similar. This lea
 
 (h) We initially thought to only build a one layer neural network mode, but when we saw that it performed much better than the OLS baseline (which by the way also performed quite well), we considered adding a second layer to try and improve the MSe even more, and it worked. About the train-test split, it worked as expected, so we chose not to change anything with regard to this.
 
-### Prediction - Classification
+#### Prediction - Classification
 
 (a) The metric that we will use is the accuracy on the test set. In order to do so, we performed a one hot encoding of the categorical variable "Class" that told us if the stellar object was a Star, a Quasar (QSO) or a Galaxy. We thus split this column into three columns (is_star, is_qso, and is_galaxy) with the value 1 if it is true, an 0 if it is not. We the train our models to try and match the true outcomes. Taking the mean of these results, we get our test accuracy (the maximum being 1).
 
