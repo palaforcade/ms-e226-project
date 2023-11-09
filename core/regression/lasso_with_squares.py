@@ -1,4 +1,6 @@
 import os
+from matplotlib import pyplot as plt
+import numpy as np
 import logging
 import pandas as pd
 from sklearn.linear_model import Lasso
@@ -13,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 class LassoWithSquaresModel:
-    LASSO_ALPHA = 0.3
+    DEFAULT_ALPHA = 0.1
 
     def __init__(self, data_folder) -> None:
         self.dataset = pd.read_csv(
@@ -23,7 +25,7 @@ class LassoWithSquaresModel:
         # Train the model
         self.add_engineered_features()
         self.train_test_split()
-        self.train_model()
+        self.train_model(alpha=self.DEFAULT_ALPHA)
 
     def add_engineered_features(self):
         # Add squared terms for MAGNITUDES AND PSF_MAGNITUDES
@@ -52,7 +54,7 @@ class LassoWithSquaresModel:
         )
         self.test_set = self.dataset.drop(self.train_set.index)
 
-    def train_model(self):
+    def train_model(self, alpha):
         """
         Train the model
         """
@@ -60,7 +62,7 @@ class LassoWithSquaresModel:
         covariates = self.train_set.drop(columns=[DatasetColumns.REDSHIFT.value])
         outcomes = self.train_set[DatasetColumns.REDSHIFT.value]
 
-        self.model = Lasso(alpha=self.LASSO_ALPHA).fit(covariates, outcomes)
+        self.model = Lasso(alpha=alpha).fit(covariates, outcomes)
 
         # Log the MSE on the train set (in-sample error)
         self.train_mse = ((self.model.predict(covariates) - outcomes) ** 2).mean()
@@ -77,3 +79,21 @@ class LassoWithSquaresModel:
         self.test_mse = ((self.model.predict(covariates) - outcomes) ** 2).mean()
 
         logger.info(f"Test MSE for Lasso with squares model: {self.test_mse}")
+
+    def plot_mse_on_alpha_values(self):
+        """
+        Plot the MSE on the train and test sets for different values of alpha
+        """
+        mse_values = []
+        alpha_values = np.linspace(0.1, 1, 100)
+        for alpha in alpha_values:
+            self.train_model(alpha=alpha)
+            self.compute_test_mse()
+            mse_values.append(self.test_mse)
+
+        plt.plot(alpha_values, mse_values)
+        plt.xlabel("Lambda")
+        plt.ylabel("MSE")
+        plt.title("MSE on the test set for different values of lambda")
+
+        plt.show()

@@ -48,20 +48,12 @@ A few issues with data collection can be outlined:
 **Data Accessibility**: Ensuring that data are accessible to the scientific public, including proper documentation. 
 
 We started data exploration and plotted the redshift as a function of the different covariates (univariates analysis). 
-We first plotted the redshift as a function of the "better fit DeV/Exp magnitude photometric band" for the five bands. Concretely, there exist two main distributions of the emitted light with regard to the width of the stellar object. "De Vaucouleurs" (DeV), a logarithmic distribution; and "Exponential Profile", and exponential distribution. "better fit DeV/Exp magnitude photometric band" fits both distributions and chooses the best fit.
-
-We got the following plots:
-
-<img src='exploration_plots_with_outliers/Magnitude_fit.png' width=50% />
+We first plotted the redshift as a function of the "better fit DeV/Exp magnitude photometric band" for the five bands. Concretely, there exist two main distributions of the emitted light with regard to the width of the stellar object. "De Vaucouleurs" (DeV), a logarithmic distribution; and "Exponential Profile", and exponential distribution. "better fit DeV/Exp magnitude photometric band" fits both distributions and chooses the best fit. See the plot in the appendix.
 
 As we can see, there are some outliers when plotting with regards to the z band.
 
-We then plotted the redshift with regard to the Petrosian Radii, Petrosian Fluxes, Petrosian Half-Light Radii, and PSF Magnitude.
+We then plotted the redshift with regard to the Petrosian Radii, Petrosian Fluxes, Petrosian Half-Light Radii, and PSF Magnitude. Plots are visible in the appendix section
 
-We got the following plots:
-
-<div display='flex'>
-<img src="./exploration_plots_with_outliers/Petrosian Radius.png" width="40%" style='{display: "inline"}'><img src="exploration_plots_with_outliers/Petrosian Half-Light Radius.png" width=40% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Petrosian Flux.png' width=40% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Magnitude_fit.png' width='40%' style='{display: "inline"}'/> 
 
 
 
@@ -107,14 +99,6 @@ Additionally, we have a reserved holdout set for a later phase in the project. T
 
 - The third model we chose to train is a one-hidden-layer neural network. Predicting the redshift is a rather complicated part, as we explained earlier. We believe that a neural network will help us be more precise in fitting the model. After trial and error, we found that using LeakyReLU as an activation function was a better fit than a sigmoid or a hyperbolic tangent.
 
-Without going too much into details, this is what the neural network works:
-
-Input Layer: This layer is responsible for receiving the input data and passing it to the next layer. Each neuron in the input layer represents a feature or input variable.
-
-Hidden Layer: This is the only hidden layer in the network, and it contains one or more neurons (also called nodes or units). The neurons in the hidden layer perform transformations on the input data using weighted connections and activation functions. These transformations allow the network to learn complex patterns and relationships in the data.
-
-Output Layer: The output layer receives the transformed data from the hidden layer and produces the final output of the network. In classification tasks, the output layer typically uses an activation function (e.g., softmax for multiclass classification) to produce class probabilities. In regression tasks, the output is a continuous value.
-
 - The fourth model we chose two train is a multi-hidden-layer neural network. For regression we chose to use two hidden layers. We chose to train this model to check if we could improve the one-layer neural network by doing a more computationnaly intensive task. We chose LeakyReLU and Tanh as activation functions.
 
 (e) We got the following results for our different models:
@@ -124,8 +108,10 @@ Output Layer: The output layer receives the transformed data from the hidden lay
 As we can see, the Lasso we trained (with a coefficient lambda = 0.3) has a big train & test MSE. 
 We can also see that the multi layer model is the best model to fit our data. It is roughly twice as good as our baseline model, and it is intersting to see that the multi layer model performs better than the one layer model. This can be explained by the fact that the model function we are trying to find is extremely complex, so there is no problem of overfitting.
 
-(f) As we saw, Lasso did not perform well. Though, we played with the regularization parameter to try and find a better option. It turns out the best option was lambda = 0.
-For Lasso, usually we have high bias if we are underfitting the model, whcih translates to both train and test MSE being high (the model does not capture all the complexities) ; and we have high variance if the train MSE is significantly lower than the test MSE, thus capturing noise.
+(f) As we saw, Lasso did not perform well. Though, we played with the regularization parameter to try and find a better option. It turns out the best option was lambda = 0. See the plot in the appendix
+
+
+For Lasso, usually we have high bias if we are underfitting the model, which translates to both train and test MSE being high (the model does not capture all the complexities) ; and we have high variance if the train MSE is significantly lower than the test MSE, thus capturing noise.
 
 As we saw with the results, Lasso train & test MSE are roughly similar. This leads us to believe that Lasso does not perform well due to high bias and underfitting. In fact, reducing the dimension of the problem by penalizing coefficients is not a good solution here.
 
@@ -174,3 +160,42 @@ Indeed, given our results, we see that both of them also have the same accuracy 
 (g) Given we take out the outliers from the holdout set, we expect nearly the same error as on the test set because we didn't perform a complicated model selection process (only at random), and the data collection is homogenous throughout the data set.
 
 (h) Initially, we thought of doing a decision tree classification or a random forest classification, but as our results with logistics regression were already very high, we decided to directly skip to neural networks to build efficient models.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Appendix
+
+##### Redshift as a function of multiple covariates
+
+<img src='exploration_plots_with_outliers/Magnitude_fit.png' width=50% />
+
+<img src="./exploration_plots_with_outliers/Petrosian Radius.png" width="40%" style='{display: "inline"}'><img src="exploration_plots_with_outliers/Petrosian Half-Light Radius.png" width=40% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Petrosian Flux.png' width=40% style='{display: "inline"}'><img src='exploration_plots_with_outliers/Magnitude_fit.png' width='40%' style='{display: "inline"}'/> 
+
+###### MSE in function of lambda for the Lasso method
+
+<img src="lasso.png" width=40%/>
