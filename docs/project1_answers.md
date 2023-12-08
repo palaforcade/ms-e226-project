@@ -162,7 +162,8 @@ Indeed, given our results, we see that both of them also have the same accuracy 
 (h) Initially, we thought of doing a decision tree classification or a random forest classification, but as our results with logistics regression were already very high, we decided to directly skip to neural networks to build efficient models.
 
 
-
+#### Code upload
+https://we.tl/t-WzebUwknfB
 
 
 

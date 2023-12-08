@@ -10,6 +10,7 @@ class Preprocessor:
         self.data_folder = data_folder
         self.raw_dataset = pd.read_csv(os.path.join(data_folder, "raw/raw_dataset.csv"))
 
+
         # Create the preprocessed folder it it doesn't exist
         os.makedirs(os.path.join(data_folder, "preprocessed"), exist_ok=True)
 
@@ -18,23 +19,23 @@ class Preprocessor:
         Create and export holdout set from our dataset
         """
         # Split the dataset in two
-        holdout_dataset = self.raw_dataset.sample(frac=0.2, random_state=RANDOM_SEED)
-        self.raw_dataset_without_holdout = self.raw_dataset.drop(holdout_dataset.index)
+        self.holdout_dataset = self.raw_dataset.sample(frac=0.2, random_state=RANDOM_SEED)
+        self.raw_dataset_without_holdout = self.raw_dataset.drop(self.holdout_dataset.index)
 
         # Export the holdout set
-        holdout_dataset.to_csv(
+        self.holdout_dataset.to_csv(
             os.path.join(self.data_folder, "preprocessed/holdout_dataset.csv"),
             index=False,
         )
 
-    def select_covariates(self):
-        self.dataset_with_selected_covariates = self.raw_dataset_without_holdout[
+    def select_covariates(self, dataset):
+        return dataset[
             [col.value for col in DatasetColumns]
         ]
 
-    def export_preprocessed_dataset(self):
-        self.preprocessed_dataset.to_csv(
-            os.path.join(self.data_folder, "preprocessed/preprocessed_dataset.csv"),
+    def export_preprocessed_dataset(self, dataset, filename):
+        dataset.to_csv(
+            os.path.join(self.data_folder, "preprocessed", filename),
             index=False,
         )
 
@@ -46,36 +47,45 @@ class Preprocessor:
         dataframe = pd.get_dummies(dataframe, columns=columns)
         return dataframe
 
-    def remove_outliers(self):
+    def remove_outliers(self, dataset):
         """
         We have outliers in the data that we need to remove. They are characterized by having a value in the covariates that are inferior to -9000.
         """
-        numerical_columns = self.dataset_with_selected_covariates.select_dtypes(
+        numerical_columns = dataset.select_dtypes(
             include=["number"]
         ).columns
-        self.dataset_with_selected_covariates[
+        dataset[
             numerical_columns
-        ] = self.dataset_with_selected_covariates[numerical_columns].mask(
-            self.dataset_with_selected_covariates[numerical_columns] < -9000, pd.NA
+        ] = dataset[numerical_columns].mask(
+            dataset[numerical_columns] < -9000, pd.NA
         )
 
-        self.preprocessed_dataset = self.dataset_with_selected_covariates.dropna(
+        dataset = dataset.dropna(
             subset=numerical_columns
         )
+        return dataset
 
     def run_preprocessing(self):
         """
         Run the preprocessing pipeline
         """
-
         self.create_holdout_set()
 
-        self.select_covariates()
+        # Run preprocessing on the main dataset
 
-        self.remove_outliers()
-
+        dataset_not_holdout = self.select_covariates(self.raw_dataset_without_holdout)
+        dataset_not_holdout = self.remove_outliers(dataset_not_holdout)
         self.preprocessed_dataset = Preprocessor.one_hot_encode_categorical_variables(
-            self.preprocessed_dataset, [DatasetColumns.CLASS.value]
+            dataset_not_holdout, [DatasetColumns.CLASS.value]
         )
 
-        self.export_preprocessed_dataset()
+        self.export_preprocessed_dataset(self.preprocessed_dataset, "preprocessed_dataset.csv")
+
+        # Run preprocessing on the holdout dataset
+        dataset_holdout = self.select_covariates(self.holdout_dataset)
+        dataset_holdout = self.remove_outliers(dataset_holdout)
+        self.preprocessed_holdout_dataset = Preprocessor.one_hot_encode_categorical_variables(
+            dataset_holdout, [DatasetColumns.CLASS.value]
+        )
+
+        self.export_preprocessed_dataset(self.preprocessed_holdout_dataset, "preprocessed_holdout_dataset.csv")
