@@ -13,10 +13,10 @@ SIGNIFICANCY_THRESHOLD = 0.05
 logger = logging.getLogger(__name__)
 
 
-class OLSBaselineModel:
+class OLSModelOnHoldout:
     def __init__(self, data_folder) -> None:
         self.dataset = pd.read_csv(
-            os.path.join(data_folder, "preprocessed/preprocessed_dataset.csv")
+            os.path.join(data_folder, "preprocessed/preprocessed_holdout_dataset.csv")
         )
 
         # Train the model
@@ -49,7 +49,7 @@ class OLSBaselineModel:
         self.train_mse = ((predictions - outcomes) ** 2).mean()
         logger.info(f"Train MSE for OLS baseline model: {self.train_mse}")
 
-        print("SUMMARY FOR THE BASELINE MODEL")
+        print("SUMMARY FOR THE HELDOUT MODEL")
         print(self.model.summary2())
 
     def compute_test_mse(self):
@@ -87,7 +87,7 @@ class OLSBaselineModel:
         ]
 
         # Print significant coefficients
-        logger.info("Computing significant coefficients for the OLS Baseline model")
+        logger.info("Computing significant coefficients for the holdout model")
         logger.info(
             f"Significant coefficients for the holdout model: {list(significant_coeffs.index)}"
         )
@@ -113,7 +113,12 @@ class OLSBaselineModel:
         bootstrap_coefficients = [
             sm.OLS(
                 sample[DatasetColumns.REDSHIFT.value],
-                sm.add_constant(sample.drop(columns=[DatasetColumns.REDSHIFT.value])),
+                np.asarray(
+                    sm.add_constant(
+                        sample.drop(columns=[DatasetColumns.REDSHIFT.value])
+                    ),
+                    dtype=float,
+                ),
             )
             .fit()
             .params
