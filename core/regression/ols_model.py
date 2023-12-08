@@ -1,7 +1,10 @@
 import os
+import numpy as np
 import logging
 import pandas as pd
 from sklearn.linear_model import LinearRegression
+from scipy.stats import t
+from torch import cov
 
 from constants.columns import DatasetColumns
 from constants.seed import RANDOM_SEED
@@ -56,3 +59,34 @@ class OLSBaselineModel:
         self.test_mse = ((self.model.predict(covariates) - outcomes) ** 2).mean()
 
         logger.info(f"Test MSE for OLS baseline model: {self.test_mse}")
+
+    def compute_coefficient_p_values(self):
+        """
+        Compute the p-values for all the linear regression coefficients
+        """
+
+        covariates = (
+            self.train_set.drop(columns=[DatasetColumns.REDSHIFT.value])
+            .to_numpy()
+            .astype(np.float64)
+        )
+
+        outcomes = self.train_set[DatasetColumns.REDSHIFT.value].to_numpy()
+
+        n = len(self.train_set)
+        p = covariates.shape[1]
+        dof = n - p - 1
+
+        # Compute the standard errors of the coefficients
+        residuals = outcomes - self.model.predict(covariates)
+        mse = (residuals**2).sum() / dof
+        prod_matrix = np.dot(covariates.T, covariates)
+        cov_matrix = mse * np.linalg.inv(prod_matrix)
+
+        se = np.diag(cov_matrix) ** 0.5
+
+        # Compute the t-statistics and p-values
+        t_values = self.model.coef_ / se
+        p_values = (1 - t.cdf(abs(t_values), dof)) * 2
+
+        return p_values

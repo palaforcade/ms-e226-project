@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug Regression Task",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/.",
+      "args": ["--task", "regression", "--data-folder", "'../data'"]
+    }
+  ]
+}

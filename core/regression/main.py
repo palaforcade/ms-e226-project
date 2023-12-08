@@ -15,7 +15,10 @@ def run_regression_models(data_folder):
     """
     logger.info("Running regression models")
 
-    OLSBaselineModel(data_folder).compute_test_mse()
+    ols_model = OLSBaselineModel(data_folder)
+    ols_model.compute_test_mse()
+
+    print(ols_model.compute_coefficient_p_values())
 
     # LassoWithSquaresModel(data_folder).compute_test_mse()
 
