@@ -142,3 +142,31 @@ class OLSBaselineModel:
         )
 
         return self.confidence_intervals
+
+    def benjamini_hochberg(self, alpha=0.05):
+        """
+        Apply the Benjamini-Hochberg procedure to control the FDR at level alpha.
+        Returns a Boolean array where True indicates the hypotheses that are rejected.
+        """
+        m = len(self.p_values)  # Total number of hypotheses
+        sorted_p_values = np.sort(self.p_values)
+        sorted_index = np.argsort(self.p_values)
+        rank = np.arange(1, m + 1)
+
+        # Compute the threshold for each p-value
+        threshold = (rank / m) * alpha
+
+        # Find where p-value crosses the threshold
+        reject = sorted_p_values <= threshold
+        max_accept = np.max(np.where(reject)[0]) if np.any(reject) else 0
+
+        # Apply the correction to the original p-values
+        corrected_accept = np.zeros(m, dtype=bool)
+        corrected_accept[sorted_index[: max_accept + 1]] = True
+
+        # Log the rejected hypotheses along with their index
+        logger.info(
+            f"Significant coefficients accordint to the BH method: {list(self.p_values[corrected_accept].index)}"
+        )
+
+        return corrected_accept

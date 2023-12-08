@@ -20,6 +20,8 @@ def run_regression_models(data_folder):
     ols_model = OLSBaselineModel(data_folder)
     ols_model.compute_test_mse()
     ols_model.significant_coefficients()
+    ols_model.compute_coefficient_p_values()
+    print(ols_model.benjamini_hochberg())
 
     ols_subset_model = OLSSubsetModel(data_folder)
     ols_subset_model.compute_test_mse()
@@ -27,7 +29,7 @@ def run_regression_models(data_folder):
     ols_heldout_model = OLSModelOnHoldout(data_folder)
     ols_heldout_model.compute_test_mse()
     ols_heldout_model.significant_coefficients()
-    print(ols_heldout_model.compute_ci_using_bootstrap())
+    ols_heldout_model.compute_ci_using_bootstrap()
 
     # LassoWithSquaresModel(data_folder).compute_test_mse()
 
