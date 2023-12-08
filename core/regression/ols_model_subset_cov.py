@@ -12,11 +12,19 @@ TRAIN_SPLIT_RATIO = 0.7
 logger = logging.getLogger(__name__)
 
 
-class OLSBaselineModel:
+class OLSSubsetModel:
     def __init__(self, data_folder) -> None:
-        self.dataset = pd.read_csv(
+        full_dataset = pd.read_csv(
             os.path.join(data_folder, "preprocessed/preprocessed_dataset.csv")
         )
+
+        # Keep only the 25 first columns in the dataset and the last
+        self.dataset = full_dataset.iloc[:, :25]
+
+        # Readd the redshift column
+        self.dataset[DatasetColumns.REDSHIFT.value] = full_dataset[
+            DatasetColumns.REDSHIFT.value
+        ]
 
         # Train the model
         self.train_test_split()
@@ -47,8 +55,7 @@ class OLSBaselineModel:
         predictions = self.model.predict(covariates)
         self.train_mse = ((predictions - outcomes) ** 2).mean()
         logger.info(f"Train MSE for OLS baseline model: {self.train_mse}")
-
-        print("SUMMARY FOR THE BASELINE MODEL")
+        print("SUMMARY FOR THE SUBSET MODEL")
         print(self.model.summary2())
 
     def compute_test_mse(self):
