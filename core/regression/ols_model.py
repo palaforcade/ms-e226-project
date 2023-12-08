@@ -69,5 +69,18 @@ class OLSBaselineModel:
         using statsmodels
         """
         # The p-values are directly available in the summary
+        model_summary = self.model.summary2()
         self.p_values = self.model.summary2().tables[1]["P>|t|"]
-        return self.p_values
+        return model_summary
+    
+    def print_significant_coefficients(self):
+        if self.model is None:
+            raise ValueError("Fit the model first using the fit method.")
+
+        # Filter coefficients based on p-value
+        significant_coeffs = self.model.params[self.model.pvalues < self.threshold]
+
+        # Print significant coefficients
+        print("Significant Coefficients:")
+        for coeff_name, coeff_value in significant_coeffs.items():
+            print(f"{coeff_name}: {coeff_value}")
