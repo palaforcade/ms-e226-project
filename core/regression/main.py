@@ -18,6 +18,7 @@ def run_regression_models(data_folder):
 
     ols_model = OLSBaselineModel(data_folder)
     ols_model.compute_test_mse()
+    ols_model.significant_coefficients()
 
     ols_subset_model = OLSSubsetModel(data_folder)
     ols_subset_model.compute_test_mse()

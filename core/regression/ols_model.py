@@ -8,6 +8,7 @@ from constants.columns import DatasetColumns
 from constants.seed import RANDOM_SEED
 
 TRAIN_SPLIT_RATIO = 0.7
+SIGNIFICANCY_THRESHOLD = 0.05
 
 logger = logging.getLogger(__name__)
 
@@ -75,15 +76,17 @@ class OLSBaselineModel:
         model_summary = self.model.summary2()
         self.p_values = self.model.summary2().tables[1]["P>|t|"]
         return model_summary
-    
-    def print_significant_coefficients(self,threshold):
+
+    def significant_coefficients(self):
         if self.model is None:
             raise ValueError("Fit the model first using the fit method.")
 
         # Filter coefficients based on p-value
-        significant_coeffs = self.model.params[self.model.pvalues < threshold]
+        significant_coeffs = self.model.params[
+            self.model.pvalues < SIGNIFICANCY_THRESHOLD
+        ]
 
         # Print significant coefficients
-        print("Significant Coefficients:")
+        logger.info("Computing significant Coefficients...")
         for coeff_name, coeff_value in significant_coeffs.items():
-            print(f"{coeff_name}: {coeff_value}")
+            logger.info(f"{coeff_name}: {coeff_value}")
