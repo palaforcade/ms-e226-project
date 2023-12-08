@@ -17,16 +17,19 @@ def run_regression_models(data_folder):
 
     OLSBaselineModel(data_folder).compute_test_mse()
 
-    LassoWithSquaresModel(data_folder).compute_test_mse()
+    # LassoWithSquaresModel(data_folder).compute_test_mse()
 
-    LassoWithSquaresModel(data_folder).plot_mse_on_alpha_values()
+    # LassoWithSquaresModel(data_folder).plot_mse_on_alpha_values()
 
     Perceptron(
         data_folder=data_folder, model_structure=OneLayerModel
     ).compute_test_mse()
 
-    Perceptron(
+    multi_layer_perceptron = Perceptron(
         data_folder=data_folder, model_structure=MultiLayerModel
-    ).compute_test_mse()
+    )
+
+    multi_layer_perceptron.compute_test_mse()
+    multi_layer_perceptron.compute_holdout_mse()
 
     logger.info("Regression models done")
