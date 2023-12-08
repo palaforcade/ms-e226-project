@@ -73,12 +73,12 @@ class OLSBaselineModel:
         self.p_values = self.model.summary2().tables[1]["P>|t|"]
         return model_summary
     
-    def print_significant_coefficients(self):
+    def print_significant_coefficients(self,threshold):
         if self.model is None:
             raise ValueError("Fit the model first using the fit method.")
 
         # Filter coefficients based on p-value
-        significant_coeffs = self.model.params[self.model.pvalues < self.threshold]
+        significant_coeffs = self.model.params[self.model.pvalues < threshold]
 
         # Print significant coefficients
         print("Significant Coefficients:")
