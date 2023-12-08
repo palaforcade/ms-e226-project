@@ -18,9 +18,11 @@ def run_classification_models(data_folder):
 
     LogisticRegressionModelStar(data_folder).compute_test_accuracy()
 
-    PerceptronClassifier(
+    one_layer_perceptron = PerceptronClassifier(
         data_folder, model_structure=OneLayerModel
-    ).compute_test_accuracy()
+    )
+    one_layer_perceptron.compute_test_accuracy()
+    one_layer_perceptron.compute_holdout_accuracy()
 
     PerceptronClassifier(
         data_folder, model_structure=MultiLayerModel

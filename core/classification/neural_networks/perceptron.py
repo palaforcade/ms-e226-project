@@ -24,6 +24,7 @@ class PerceptronClassifier:
         self.dataset = pd.read_csv(
             os.path.join(data_folder, "preprocessed/preprocessed_dataset.csv")
         )
+        self.data_folder = data_folder
 
         self.model_structure = model_structure
 
@@ -135,5 +136,41 @@ class PerceptronClassifier:
             test_accuracy = (y_pred == self.test_outcomes).float().mean()
 
             logger.info(
-                f"Test MSE for {self.model_structure.__name__} NN: {test_accuracy.item():.4f}"
+                f"Test accuracy for {self.model_structure.__name__} NN: {test_accuracy.item():.4f}"
+            )
+
+    def compute_holdout_accuracy(self):
+        """
+        Compute the model accuracy on the holdout set
+        """
+
+        holdout_set = pd.read_csv(
+            os.path.join(
+                self.data_folder, "preprocessed/preprocessed_holdout_dataset.csv"
+            )
+        )
+
+        holdout_covariates = holdout_set.drop(
+            columns=[
+                StellarClassOneHotEncoded.STAR.value,
+                StellarClassOneHotEncoded.GALAXY.value,
+                StellarClassOneHotEncoded.QSO.value,
+            ]
+        )
+        holdout_outcomes = holdout_set[StellarClassOneHotEncoded.STAR.value]
+
+        holdout_covariates = self.scaler.transform(holdout_covariates)
+
+        holdout_covariates = from_numpy(holdout_covariates).float()
+        holdout_outcomes = from_numpy(holdout_outcomes.values).float()
+
+        with no_grad():
+            y_prob = self.model(holdout_covariates).squeeze()
+
+            y_pred = (y_prob >= THRESHOLD).float()
+
+            holdout_accuracy = (y_pred == holdout_outcomes).float().mean()
+
+            logger.info(
+                f"Holdout accuracy for {self.model_structure.__name__} NN: {holdout_accuracy.item():.4f}"
             )
