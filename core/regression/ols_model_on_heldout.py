@@ -42,7 +42,7 @@ class OLSModelOnHoldout:
         # Adding a constant for the intercept term
         covariates = sm.add_constant(covariates)
 
-        self.model = sm.OLS(outcomes, np.asarray(covariates, dtype=float)).fit()
+        self.model = sm.OLS(outcomes, covariates.astype(float)).fit()
 
         # Log the MSE on the train set (in-sample error)
         predictions = self.model.predict(covariates)
@@ -113,12 +113,9 @@ class OLSModelOnHoldout:
         bootstrap_coefficients = [
             sm.OLS(
                 sample[DatasetColumns.REDSHIFT.value],
-                np.asarray(
-                    sm.add_constant(
-                        sample.drop(columns=[DatasetColumns.REDSHIFT.value])
-                    ),
-                    dtype=float,
-                ),
+                sm.add_constant(
+                    sample.drop(columns=[DatasetColumns.REDSHIFT.value])
+                ).astype(float),
             )
             .fit()
             .params
@@ -145,5 +142,8 @@ class OLSModelOnHoldout:
             },
             index=bootstrap_coefficients[0].index,
         )
+
+        print("CONFIDENCE INTERVALS FOR THE HELDOUT MODEL")
+        print(self.confidence_intervals)
 
         return self.confidence_intervals

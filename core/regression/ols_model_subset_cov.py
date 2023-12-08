@@ -49,7 +49,7 @@ class OLSSubsetModel:
         # Adding a constant for the intercept term
         covariates = sm.add_constant(covariates)
 
-        self.model = sm.OLS(outcomes, np.asarray(covariates, dtype=float)).fit()
+        self.model = sm.OLS(outcomes, covariates.astype(float)).fit()
 
         # Log the MSE on the train set (in-sample error)
         predictions = self.model.predict(covariates)
@@ -81,3 +81,16 @@ class OLSSubsetModel:
         # The p-values are directly available in the summary
         self.p_values = self.model.summary2().tables[1]["P>|t|"]
         return self.p_values
+
+    def significant_coefficients(self):
+        if self.model is None:
+            raise ValueError("Fit the model first using the fit method.")
+
+        # Filter coefficients based on p-value
+        significant_coeffs = self.model.params[self.model.pvalues < 0.001]
+
+        # Print significant coefficients
+        logger.info("Computing significant coefficients for the OLS Baseline model")
+        logger.info(
+            f"Significant coefficients for the OLS subset model: {list(significant_coeffs.index)}"
+        )

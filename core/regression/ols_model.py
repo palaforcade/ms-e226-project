@@ -8,7 +8,7 @@ from constants.columns import DatasetColumns
 from constants.seed import RANDOM_SEED
 
 TRAIN_SPLIT_RATIO = 0.7
-SIGNIFICANCY_THRESHOLD = 0.05
+SIGNIFICANCY_THRESHOLD = 0.001
 
 logger = logging.getLogger(__name__)
 
@@ -42,7 +42,7 @@ class OLSBaselineModel:
         # Adding a constant for the intercept term
         covariates = sm.add_constant(covariates)
 
-        self.model = sm.OLS(outcomes, np.asarray(covariates, dtype=float)).fit()
+        self.model = sm.OLS(outcomes, covariates.astype(float)).fit()
 
         # Log the MSE on the train set (in-sample error)
         predictions = self.model.predict(covariates)
@@ -89,7 +89,7 @@ class OLSBaselineModel:
         # Print significant coefficients
         logger.info("Computing significant coefficients for the OLS Baseline model")
         logger.info(
-            f"Significant coefficients for the holdout model: {list(significant_coeffs.index)}"
+            f"Significant coefficients for the OLS baseline model: {list(significant_coeffs.index)}"
         )
 
     def compute_ci_using_bootstrap(self):
@@ -143,7 +143,7 @@ class OLSBaselineModel:
 
         return self.confidence_intervals
 
-    def benjamini_hochberg(self, alpha=0.05):
+    def benjamini_hochberg(self, alpha=0.001):
         """
         Apply the Benjamini-Hochberg procedure to control the FDR at level alpha.
         Returns a Boolean array where True indicates the hypotheses that are rejected.
@@ -166,7 +166,7 @@ class OLSBaselineModel:
 
         # Log the rejected hypotheses along with their index
         logger.info(
-            f"Significant coefficients accordint to the BH method: {list(self.p_values[corrected_accept].index)}"
+            f"Significant coefficients according to the BH method: {list(self.p_values[corrected_accept].index)}"
         )
 
         return corrected_accept
